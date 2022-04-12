@@ -22,6 +22,7 @@ BOOL CALLBACK DialogProc(
 	WPARAM wParam, // first message parameter
 	LPARAM lParam  // second message parameter
 );
+
 //设置ProcessListView风格
 void InitProcessListView(HWND hwndDlg);
 //设置ModulesListView风格
@@ -38,6 +39,8 @@ int APIENTRY WinMain(
 )
 {
 	EnableDebugPrivilege();
+
+	// 加载通用控件
 	INITCOMMONCONTROLSEX icex;
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	icex.dwICC = ICC_WIN95_CLASSES;
@@ -45,6 +48,7 @@ int APIENTRY WinMain(
 
 	g_hInstance = hInstance;
 
+	// 创建对话框
 	DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG_MAIN), NULL, DialogProc);
 
 }
@@ -130,8 +134,8 @@ void EnumModules(HWND hListProcess)
 		vitem.pszText = szlpModuleBaseBuffer;
 		vitem.iItem = n;
 		vitem.iSubItem = 1;
-		ListView_SetItem(hListProcess, &vitem); 
-		
+		ListView_SetItem(hListProcess, &vitem);
+
 		vitem.pszText = szlpModuleSizeBuffer;
 		vitem.iItem = n;
 		vitem.iSubItem = 2;
@@ -171,7 +175,7 @@ BOOL CALLBACK DialogProc(
 		EndDialog(hwndDlg, 0);
 		return TRUE;
 
-	case WM_NOTIFY: 
+	case WM_NOTIFY:
 	{
 		NMHDR* pNMHDR = (NMHDR*)lParam;
 		if (wParam == IDC_LIST_PROCESS && pNMHDR->code == NM_CLICK)
@@ -181,8 +185,7 @@ BOOL CALLBACK DialogProc(
 		return FALSE;
 	}
 
-	case  WM_COMMAND:
-
+	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
 		case   IDC_BUTTON_ABOUT:
@@ -253,7 +256,7 @@ void InitProcessListView(HWND hDlg)
 	TCHAR szlpPidBuffer[0x10] = { 0 };
 	TCHAR szlpImagebaseBuffer[0x10] = { 0 };
 	TCHAR szlpImageSizeBuffer[0x10] = { 0 };
-	
+
 	while (flag)
 	{
 		wsprintf(szlpProcessNameBuffer, TEXT("%ws"), pe32.szExeFile);
